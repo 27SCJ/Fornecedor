@@ -3,7 +3,7 @@ package com.fiap.trabalho.teste;
 import javax.xml.ws.WebServiceRef;
 
 public class HelloClient {
-	
+	 
 	/*
 	@WebServiceRef(wsdlLocation = " http://fiapgoverno.brazilsouth.cloudapp.azure.com:8080/Governo/WebServiceNF?wsdl")
 	static WebServiceNFService service;
