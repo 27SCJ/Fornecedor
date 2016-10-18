@@ -1,6 +1,8 @@
 package com.fiap.trabalho.ws;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,14 +10,21 @@ import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
+
+import br.com.governo.ws.NotaFiscal;
+import br.com.governo.ws.WebServiceNF;
+import br.com.governo.ws.WebServiceNFService;
 
 @WebService
 public class FornecedorWeb {
 
 	static private List<Produto> produtos;
-
+	private static final String WS_URL_GOVERNO = "http://fiapgoverno.brazilsouth.cloudapp.azure.com:8080/Governo/WebServiceNF?wsdl";
+	
+	
 	@Resource
 	WebServiceContext wsctx;
 
@@ -88,7 +97,7 @@ public class FornecedorWeb {
 		if (autenticado("listarProdutos")) {
 			return produtos;
 		} else {
-			throw new Exception("Falha na autenticação");
+			throw new Exception("Falha na autenticaï¿½ï¿½o");
 		}
 	}
 
@@ -98,16 +107,34 @@ public class FornecedorWeb {
 		if (autenticado("efetuarPedido")) {
 			// Consumo Grupo Governo
 
+			// Consumo Grupo Governo
+			WebServiceNFService validate = new WebServiceNFService();
+			WebServiceNF emitir = validate.getWebServiceNFPort();
+			/***** Usuario e Senha **/
+			Map<String, Object> req_ctx = ((BindingProvider) emitir).getRequestContext();
+			req_ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, WS_URL_GOVERNO);
+
+			Map<String, List<String>> headers = new HashMap<String, List<String>>();
+			headers.put("cpf", Collections.singletonList("12345678901"));
+			headers.put("password", Collections.singletonList("123"));
+			req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+			/**********************************************************************/
+			
+			NotaFiscal nota = emitir.emitirNotaFiscal("29216472812", 400.00);
+			
+			System.out.println("Teste");
+			System.out.println(nota.getValorTotal());
+			
 			// Consumo Grupo Financeira
 
 			// Consumo Grupo Transportadora
 
-			// Se o resultado das três chamadas acima forem verdadeiras,
+			// Se o resultado das trï¿½s chamadas acima forem verdadeiras,
 			// retornaremos true
 
 			return true;
 		} else {
-			throw new Exception("Falha na autenticação");
+			throw new Exception("Falha na autenticaï¿½ï¿½o");
 		}
 	}
 
