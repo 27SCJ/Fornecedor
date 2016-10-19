@@ -8,8 +8,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.client.filter.HttpBasicAuthFilter;
-
 import br.com.governo.ws.Exception_Exception;
 import br.com.governo.ws.NotaFiscal;
 import br.com.transportadora.entity.Frete;
@@ -38,8 +36,8 @@ public class ServicoTransportadora {
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.post(Entity.entity(remessa, MediaType.APPLICATION_XML));
 		RSResponse resp = response.readEntity(RSResponse.class);
-		System.out.println(resp.getMessage());
-		System.out.println(resp.getvalue());
+		/*System.out.println(resp.getMessage());
+		System.out.println(resp.getvalue());*/
 		return resp;
 		
 	}
