@@ -14,6 +14,9 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
+import br.com.fiap.endpoint.Cliente;
+import br.com.fiap.endpoint.EndpointFinanceiro;
+import br.com.fiap.endpoint.EndpointFinanceiroService;
 import br.com.governo.ws.NotaFiscal;
 import br.com.governo.ws.WebServiceNF;
 import br.com.governo.ws.WebServiceNFService;
@@ -23,7 +26,7 @@ public class FornecedorWeb {
 
 	static private List<Produto> produtos;
 	private static final String WS_URL_GOVERNO = "http://fiapgoverno.brazilsouth.cloudapp.azure.com:8080/Governo/WebServiceNF?wsdl";
-	
+	private static final String WS_URL_FINANCEIRO = "http://54.191.197.37:8080/FinanceiroWS/EndpointFinanceiro";
 	
 	@Resource
 	WebServiceContext wsctx;
@@ -80,14 +83,12 @@ public class FornecedorWeb {
 			senha = senhas.get(0);
 
 		}
-		
 
-		if (Tipo.equals("listarProdutos")   && usuario.equals("listar") && senha.equals("123")) {
+		if (Tipo.equals("listarProdutos") && usuario.equals("listar") && senha.equals("123")) {
 			return true;
-		} else if (Tipo.equals("efetuarPedido")  && usuario.equals("efetuar") && senha.equals("456")) {
+		} else if (Tipo.equals("efetuarPedido") && usuario.equals("efetuar") && senha.equals("456")) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -102,10 +103,9 @@ public class FornecedorWeb {
 	}
 
 	@WebMethod
-	public boolean efetuarPedido(@WebParam(name="cnpjCpf", header=false) String cnpjCpf, 
-			@WebParam(name="produtos", header=false) List<Produto> produtos) throws Exception {
+	public boolean efetuarPedido(@WebParam(name = "cnpjCpf", header = false) String cnpjCpf,
+			@WebParam(name = "produtos", header = false) List<Produto> produtos) throws Exception {
 		if (autenticado("efetuarPedido")) {
-			// Consumo Grupo Governo
 
 			// Consumo Grupo Governo
 			WebServiceNFService validate = new WebServiceNFService();
@@ -119,13 +119,46 @@ public class FornecedorWeb {
 			headers.put("password", Collections.singletonList("123"));
 			req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 			/**********************************************************************/
-			
+
 			NotaFiscal nota = emitir.emitirNotaFiscal("29216472812", 400.00);
-			
+
 			System.out.println("Teste");
 			System.out.println(nota.getValorTotal());
-			
+
 			// Consumo Grupo Financeira
+
+			EndpointFinanceiroService financeiro = new EndpointFinanceiroService();
+			EndpointFinanceiro financeiroFuncoes = financeiro.getEndpointFinanceiroPort();
+			
+			Cliente cliente = new Cliente();
+			cliente.setIdentificador("Estabelecimentos");
+			cliente.setNome("juancho");
+			cliente.setSaldo(nota.getValorTotal());
+			cliente.setSenha("123");
+			cliente.setUsuario("teste");
+			financeiroFuncoes.cadastrarCliente(cliente);
+			
+			/***** Usuario e Senha **/
+			/*Map<String, Object> req_ctx = ((BindingProvider) emitir).getRequestContext();
+			req_ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, WS_URL_FINANCEIRO);
+
+			Map<String, List<String>> headers = new HashMap<String, List<String>>();
+			headers.put("cpf", Collections.singletonList("12345678901"));
+			headers.put("password", Collections.singletonList("123"));
+			req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);*/
+			/**********************************************************************/
+			
+			
+			
+			/***** Usuario e Senha **/
+			/*Map<String, Object> req_ctx = ((BindingProvider) emitir).getRequestContext();
+			req_ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, WS_URL_FINANCEIRO);
+
+			Map<String, List<String>> headers = new HashMap<String, List<String>>();
+			headers.put("cpf", Collections.singletonList("12345678901"));
+			headers.put("password", Collections.singletonList("123"));
+			req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);*/
+			/**********************************************************************/
 
 			// Consumo Grupo Transportadora
 
