@@ -1,10 +1,6 @@
 package com.fiap.trabalho.ws;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -12,12 +8,15 @@ import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
+import com.fiap.trabalho.enums.TipoAcesso;
 import com.fiap.trabalho.helper.Autenticar;
 import com.fiap.trabalho.helper.GerarProdutos;
 import com.fiap.trabalho.helper.ServicoFinanceiro;
 import com.fiap.trabalho.helper.ServicoGoverno;
+import com.fiap.trabalho.helper.ServicoTransportadora;
 import com.fiap.trabalho.model.Produto;
 import br.com.governo.ws.NotaFiscal;
+import br.com.transportadora.entity.RSResponse;
 @WebService
 public class FornecedorWeb {
 
@@ -33,7 +32,7 @@ public class FornecedorWeb {
 	WebServiceContext wsctx;
 
 	@WebMethod(exclude = true)
-	public boolean autenticado(String Tipo) {
+	public boolean autenticado(TipoAcesso Tipo) {
 
 		MessageContext mctx = wsctx.getMessageContext();
 		Autenticar autenticar = new Autenticar();
@@ -43,7 +42,7 @@ public class FornecedorWeb {
 
 	@WebMethod
 	public List<Produto> listarProdutos() throws Exception {
-		if (autenticado("listarProdutos")) {
+		if (autenticado(TipoAcesso.listarProdutos)) {
 			return produtos;
 		} else {
 			throw new Exception("Falha na autenticação");
@@ -53,7 +52,7 @@ public class FornecedorWeb {
 	@WebMethod
 	public boolean efetuarPedido(@WebParam(name = "cnpjCpf", header = false) String cnpjCpf,
 			@WebParam(name = "produtos", header = false) List<Produto> produtos) throws Exception {
-		if (autenticado("efetuarPedido")) {
+		if (autenticado(TipoAcesso.efetuarPedidos)) {
 
 			// Servico Governo
 			Double somaTotal = produtos.stream().mapToDouble(Produto::getValor).sum();
@@ -63,8 +62,14 @@ public class FornecedorWeb {
 			System.out.println("teste: " + notaFiscal.getValorTotal());
 
 			// Servico Financeira
-			boolean financeira = new ServicoFinanceiro().debitarServico();
+			//boolean financeira = new ServicoFinanceiro().debitarServico();
 
+			// Servico Transportadora
+			RSResponse response = new ServicoTransportadora().gerarFrete(notaFiscal.getCnpjReceptor(), notaFiscal.getCnpjEmissor());
+			
+			System.out.println("TESTE");
+			System.out.println("MENSAGEM "+response.getMessage());
+			
 			return true;
 		} else {
 			throw new Exception("Falha na autenticacão");
