@@ -1,0 +1,1 @@
+http://52.67.139.219:8080/Fornecedor/FornecedorWebService?wsdl

@@ -1,0 +1,14 @@
+// Servico Governo
+
+O metodo esta apresentando um erro de WFLYEJB0168: 
+Could not find EJB with id UnknownSessionID 
+[6852555557567055505749695250575466575467526569485357675457566748] 
+antes ele não apresentaba esse erro mas agora esta aparecendo pelo dando erro vai retornar sempre false porque entra para o Exception_Exception
+
+Servico Financeira
+
+O servico financeira tem uma coisa que é meio estranha porque ele primeiro pede para cadastrar um cliente para logo receber um cnpjcpf, ele nao esta autogerando um usuario e senha pelo que no nosso teste temos que enviar dados diferentes cada vez que queramos testar mas isso vai ser via codigo(hardcode)
+
+// Servico Transportadora
+
+No servico transportadora ele tem que receber a nota fiscal mas ai tem dois metodos tipo get Cpf e Cnpj isso faz que por enquanto a gente só passe o CPf ou Cnpj( a gente pensaba que o metodo ia a ser getCpfCnpjReceptor() ou seja que poderia receber tanto cpf como cnpj)
