@@ -18,7 +18,7 @@ public class ServicoFinanceiro {
 
 	private static final String WS_URL_FINANCEIRO = "http://54.191.197.37:8080/FinanceiroWS/EndpointFinanceiro?wsdl";
 	
-	public boolean debitarServico() throws br.com.fiap.endpoint.Exception_Exception {
+	public boolean debitarServico(String numeroCpf, double valorTotal) throws br.com.fiap.endpoint.Exception_Exception {
 		
 		EndpointFinanceiroService financeiro = new EndpointFinanceiroService();
 		EndpointFinanceiro financeiroFuncoes = financeiro.getEndpointFinanceiroPort();
@@ -30,17 +30,17 @@ public class ServicoFinanceiro {
 		req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 		
 		Cliente cliente = new Cliente();
-		cliente.setIdentificador("teste345");
-		cliente.setNome("juancho345");
+		cliente.setIdentificador("teste3456");
+		cliente.setNome("juancho3456");
 		cliente.setSaldo(5000.0);
 		cliente.setSenha("123");
-		cliente.setUsuario("teste57");
+		cliente.setUsuario("teste60");
 		financeiroFuncoes.cadastrarCliente(cliente);
-		System.out.println("ENtro aqui 1");
+		
 
 		CobrarMensalidade cobrar = new CobrarMensalidade();
 		cobrar.setIndentificador(cliente.getIdentificador());
-		return financeiroFuncoes.cobrar("teste345", 300.0);
+		return financeiroFuncoes.cobrar(numeroCpf, valorTotal);
 		
 	}
 	

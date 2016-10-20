@@ -24,12 +24,10 @@ public class ServicoGoverno {
 
 		Map<String, Object> req_ctx = ((BindingProvider) emitir).getRequestContext();
 		req_ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, WS_URL_GOVERNO);
-
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		headers.put("cpf", Collections.singletonList(cnpjCpf));
+		headers.put("cpf", Collections.singletonList("12345678901"));
 		headers.put("password", Collections.singletonList("123"));
 		req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
-
 		NotaFiscal nota = emitir.emitirNotaFiscal(cnpjCpf, somaTotal);
 
 		return nota;

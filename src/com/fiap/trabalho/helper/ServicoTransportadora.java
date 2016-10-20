@@ -20,14 +20,14 @@ public class ServicoTransportadora {
 	private static final String WS_FRETE = "frete";
 	private static final String WS_GERAR = "gerar";
 
-	public RSResponse gerarFrete(String destinatario, String remetente) {
+	public RSResponse gerarFrete(String destinatario, String remetente,int numeroProdutos, double valorTotal) {
 		
 		Remessa remessa = new Remessa();
 		remessa.setDocumentoDestinatario(destinatario);
 		remessa.setDocumentoRemetente(remetente);
 		Frete frete = new Frete();
-		frete.setNumeroDeProdutos(4);
-		frete.setValorTotalDaRemessa(345);
+		frete.setNumeroDeProdutos(numeroProdutos);
+		frete.setValorTotalDaRemessa(valorTotal);
 		remessa.setFrete(frete);
 
 		Client client = ClientBuilder.newClient();
@@ -36,8 +36,6 @@ public class ServicoTransportadora {
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.post(Entity.entity(remessa, MediaType.APPLICATION_XML));
 		RSResponse resp = response.readEntity(RSResponse.class);
-		/*System.out.println(resp.getMessage());
-		System.out.println(resp.getvalue());*/
 		return resp;
 		
 	}
